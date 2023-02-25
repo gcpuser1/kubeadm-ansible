@@ -1,0 +1,8 @@
+---
+# handlers file for kubeadm
+- name: start service
+  service:
+    enabled: true
+    name: "{{item}}"
+    state: started
+  loop: "{{applications}}"

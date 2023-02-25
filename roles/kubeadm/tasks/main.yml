@@ -1,0 +1,18 @@
+---
+# tasks file for kubeadm
+- name: Add Kubeadam config manager
+  yum_repository:
+   name: kubernetes
+   baseurl: "{{url}}"
+   gpgcheck: true
+   gpgkey: "{{gpgurl}}"
+   enabled: true
+   description: Kubernets installation kubeadm way
+   exclude: "{{applications}}"
+- name: install applications
+  yum:
+    name: "{{item}}"
+    state: latest
+    disable_excludes: kubernetes
+  loop: "{{applications}}"
+  notify: start service

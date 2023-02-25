@@ -1,0 +1,8 @@
+---
+# defaults file for kubeadm
+url: https://packages.cloud.google.com/yum/repos/kubernetes-el7-\$basearch
+gpgurl: https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+applications:
+  - kubelet
+  - kubeadm 
+  - kubectl

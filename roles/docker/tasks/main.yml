@@ -1,0 +1,24 @@
+---
+# tasks file for docker
+- name: add docker package manager
+  get_url:
+   url: "{{ docker_url }}"
+   dest: /etc/yum.repos.d/docker-ce.repo
+   mode: '0644'
+
+- name: Create the docker group
+  group:
+    name: docker
+    state: present
+- name: Add users to the docker secondary group
+  user:
+    name: "{{ item }}"
+    append: yes
+    groups: docker
+  with_items: "{{docker_users}}"
+- name: install docker
+  become: true
+  yum: 
+    name: " {{item}} "
+  loop: "{{ applications }}"
+  notify: start service

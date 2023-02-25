@@ -1,0 +1,4 @@
+[controlplane]
+localhost ansible_connection=local
+[nodes]
+node01 

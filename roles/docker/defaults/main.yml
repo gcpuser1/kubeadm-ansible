@@ -1,0 +1,12 @@
+---
+# defaults file for docker
+docker_users:
+  - root
+applications:
+  - docker-ce 
+  - docker-ce-cli 
+  - containerd.io 
+  - docker-buildx-plugin
+  - docker-compose-plugin
+docker_url: https://download.docker.com/linux/centos/docker-ce.repo
+checksum: sha256:6650718e0fe5202ae7618521f695d43a8bc051c539d7570f0edbfa5b4916f218

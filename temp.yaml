@@ -1,0 +1,50 @@
+-  name: install docker
+   hosts: all
+   roles:
+   - docker
+   - kubeadm
+- name: Disable SWAP since kubernetes can't work with swap enabled
+  hosts: all
+  tasks:
+  - name: turn of swapp space
+    shell: |
+     swapoff -a
+  - name: Disable SWAP in fstab since kubernetes can't work with swap enabled (2/2)
+    replace:
+      path: /etc/fstab
+      regexp: '^([^#].*?\sswap\s+sw\s+.*)$'
+      replace: '# \1'
+  - name: open ports 6443
+    firewalld:
+      port: 6443/tcp
+      permanent: true
+      state: enabled
+  - name: open ports 10250
+    firewalld:
+      port: 6443/tcp
+      permanent: true
+      state: enabled
+- name: Initialize pod Network
+  hosts: controlplane
+  become: yes
+  tasks:
+  - name: Include vars of kubervars.yaml
+    include_vars:
+      file: kubervars.yaml
+      name: temp 
+  - name: Remove container toml file
+    file:
+      path: /etc/containerd/config.toml
+      state: absent
+  
+  - name: pod Network
+    debugger: always
+    shell: |
+      kubeadm init --pod-network-cidr={{temp.cidr}} --control-plane-endpoint={{temp.hostip}} --apiserver-advertise-address={{temp.hostip}}
+    register: joindata
+  - name: apply flannel network
+    debug:
+      msg: joindata
+  - name: apply network
+    debug:
+      msg: "kubectl apply -f {{temp.flannel}}"
